@@ -5,8 +5,6 @@ import asyncio
 
 app = FastAPI()
 
-
-
 #同步函數同步方法
 @app.get("/root/1/")
 def root1():
