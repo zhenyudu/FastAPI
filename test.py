@@ -14,7 +14,7 @@ async def main(sub_url):
         tasks = [send_request(session, url) for _ in range(5)]
         responses = await asyncio.gather(*tasks)
         for response in responses:
-            pass
+            print(response)
     print(f"{url}")
     print(time.time()-start_time)
 
