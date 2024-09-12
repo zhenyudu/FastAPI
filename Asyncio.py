@@ -2,27 +2,26 @@ from fastapi import FastAPI
 import time
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 
 
 N = 100000000
 
-async def acal():
+async def acal(a, b):
     start = time.time()
-    a = 10
     for x in range(N):
         a += x
         a -= x
     end = time.time() - start
-    return a, end
+    return a+b, end
 
-def cal():
+def cal(a, b):
     start = time.time()
-    a = 10
     for x in range(N):
         a += x
         a -= x
     end = time.time() - start
-    return a, end
+    return a+b, end
 
 app = FastAPI()
 
@@ -63,16 +62,32 @@ async def root4():
 @app.get("/cal/1")
 async def func1():
     print("connect!")
-    n, end = await acal()
+    n, end = await acal(10, 8)
     print("success!")
     return {'value': n, 'time': end}
+
+# loop = asyncio.get_event_loop()
+# process_pool = ProcessPoolExecutor()
 
 #CPU型任務需要套用ProcessPoolExecutor()來開啟多線程
 @app.get("/cal/2")
 async def func1():
     print("connect!")
-    loop = asyncio.get_event_loop()
-    with ProcessPoolExecutor() as pool:
-        n, end = await loop.run_in_executor(pool, cal)
+    n, end = await loop.run_in_executor(process_pool, partial(cal, 10, 8))
     print("success!")
     return {'value': n, 'time': end}
+
+
+
+# 在應用啟動時觸發
+@app.on_event("startup")
+async def startup_event():
+    global process_pool, loop
+    loop = asyncio.get_event_loop()
+    process_pool = ProcessPoolExecutor()
+
+# 在應用關閉時觸發
+@app.on_event("shutdown")
+async def shutdown_event():
+    global process_pool
+    process_pool.shutdown()
