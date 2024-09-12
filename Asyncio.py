@@ -1,7 +1,28 @@
 from fastapi import FastAPI
 import time
 import asyncio
+from concurrent.futures import ProcessPoolExecutor
 
+
+N = 100000000
+
+async def acal():
+    start = time.time()
+    a = 10
+    for x in range(N):
+        a += x
+        a -= x
+    end = time.time() - start
+    return a, end
+
+def cal():
+    start = time.time()
+    a = 10
+    for x in range(N):
+        a += x
+        a -= x
+    end = time.time() - start
+    return a, end
 
 app = FastAPI()
 
@@ -37,3 +58,21 @@ async def root4():
     await loop.run_in_executor(None, time.sleep, 3)
     print("success!")
     return {"response": "200"}
+
+
+@app.get("/cal/1")
+async def func1():
+    print("connect!")
+    n, end = await acal()
+    print("success!")
+    return {'value': n, 'time': end}
+
+#CPU型任務需要套用ProcessPoolExecutor()來開啟多線程
+@app.get("/cal/2")
+async def func1():
+    print("connect!")
+    loop = asyncio.get_event_loop()
+    with ProcessPoolExecutor() as pool:
+        n, end = await loop.run_in_executor(pool, cal)
+    print("success!")
+    return {'value': n, 'time': end}

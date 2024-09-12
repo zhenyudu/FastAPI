@@ -20,7 +20,9 @@ async def main(sub_url):
 
 if __name__ == "__main__":
 
-    print(asyncio.run(main('/root/1/')))
-    print(asyncio.run(main('/root/2/')))
-    print(asyncio.run(main('/root/3/')))
-    print(asyncio.run(main('/root/4/')))
+    # print(asyncio.run(main('/root/1/')))
+    # print(asyncio.run(main('/root/2/')))
+    # print(asyncio.run(main('/root/3/')))
+    # print(asyncio.run(main('/root/4/')))
+    print(asyncio.run(main('/cal/1/')))
+    print(asyncio.run(main('/cal/2/')))
