@@ -5,7 +5,8 @@ import time
 async def send_request(session, url):
     async with session.get(url) as response:
         return await response.json()
-    
+
+#模擬同時發送多個requests
 async def main(sub_url):
     url = "http://127.0.0.1:8000"+sub_url
     start_time = time.time()
